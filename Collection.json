@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "a1c27cdc-125b-42ee-b24f-9da24ff25830",
+		"name": "Carbon Calculator",
+		"description": "This API allows users to calculate their carbon footprint based on basic information and environmental impact factors such as energy consumption, transportation, and waste production. The backend is built using Java, Spring Boot and MongoDB.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22304559"
+	},
+	"item": [
+		{
+			"name": "Create calculation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Teste\",\n    \"uf\": \"SP\",\n    \"email\": \"email@email.com\",\n    \"phoneNumber\": \"12983105512\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/open/start-calc",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"open",
+						"start-calc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update calculation info",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"02c9a732-d30f-4ef9-9b90-47d2d52d736b\",\n    \"energyConsumption\": 10,\n    \"transportation\": [\n        {\n            \"type\": \"CAR\",\n            \"monthlyDistance\": 10\n        },\n        {\n            \"type\": \"MOTORCYCLE\",\n            \"monthlyDistance\": 10\n        },\n        {\n            \"type\": \"PUBLIC_TRANSPORT\",\n            \"monthlyDistance\": 10\n        },\n        {\n            \"type\": \"BICYCLE\",\n            \"monthlyDistance\": 10\n        }\n    ],\n    \"solidWasteTotal\": 10,\n    \"recyclePercentage\": 0.1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/open/info",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"open",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtain result",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/open/result/02c9a732-d30f-4ef9-9b90-47d2d52d736b",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"open",
+						"result",
+						"02c9a732-d30f-4ef9-9b90-47d2d52d736b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/status/check",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"status",
+						"check"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
