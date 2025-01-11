@@ -89,16 +89,54 @@ public class CalculationService {
                 total.doubleValue());
     }
 
+    private Calculation findCalculationById(String id) {
+
+        log.info("Searching for calculation with id [{}]...", id);
+
+        Optional<Calculation> calculationOptional = calculationRepository.findById(id);
+
+        if (!calculationOptional.isPresent()) {
+            throw new CalculationNotFoundException(id);
+        }
+
+        log.info("Calculation with id [{}] found.", id);
+
+        return calculationOptional.get();
+    }
+
+    private boolean saveCalculation(Calculation calculation) {
+
+        log.info("Saving calculation with id [{}]...", calculation.getId());
+
+        Calculation savedCalculation = calculationRepository.save(calculation);
+        boolean success = savedCalculation != null;
+
+        log.info("Calculation with id [{}] saved successfully.", calculation.getId());
+
+        return success;
+    }
+
+    private BigDecimal calculateEnergyEmissions(Calculation calculation) {
+
+        EnergyEmissionFactor energyFactor = energyEmissionFactorRepository.findById(calculation.getUf()).get();
+
+        BigDecimal energyEmissions = BigDecimal.valueOf(calculation.getEnergyConsumption())
+                .multiply(BigDecimal.valueOf(energyFactor.getFactor()))
+                .setScale(2, RoundingMode.HALF_UP);
+
+        return energyEmissions;
+    }
+
     private BigDecimal calculateTransportationEmissions(Calculation calculation) {
 
         Map<TransportationType, BigDecimal> transportationFactors = new HashMap<>();
 
         calculation.getTransportation().stream()
                 .map(transportation -> transportationEmissionFactorRepository
-                .findById(transportation.getType()).get())
+                        .findById(transportation.getType()).get())
                 .forEach(transportationFactor -> transportationFactors.put(
-                transportationFactor.getType(),
-                BigDecimal.valueOf(transportationFactor.getFactor())));
+                        transportationFactor.getType(),
+                        BigDecimal.valueOf(transportationFactor.getFactor())));
 
         BigDecimal transportationEmissions = calculation.getTransportation().stream()
                 .map(transportation -> {
@@ -130,45 +168,6 @@ public class CalculationService {
                 .setScale(2, RoundingMode.HALF_UP);
 
         return solidWasteEmissions;
-    }
-
-    private BigDecimal calculateEnergyEmissions(Calculation calculation) {
-
-        EnergyEmissionFactor energyFactor = energyEmissionFactorRepository.findById(calculation.getUf()).get();
-
-        BigDecimal energyEmissions = BigDecimal.valueOf(calculation.getEnergyConsumption())
-                .multiply(BigDecimal.valueOf(energyFactor.getFactor()))
-                .setScale(2, RoundingMode.HALF_UP);
-
-        return energyEmissions;
-    }
-
-    private Calculation findCalculationById(String id) {
-
-        log.info("Searching for calculation with id [{}]...", id);
-
-        Optional<Calculation> calculationOptional = calculationRepository.findById(id);
-
-        if (!calculationOptional.isPresent()) {
-            log.error("Calculation with id [{}] not found.", id);
-            throw new CalculationNotFoundException(id);
-        }
-
-        log.info("Calculation with id [{}] found.", id);
-
-        return calculationOptional.get();
-    }
-
-    private boolean saveCalculation(Calculation calculation) {
-
-        log.info("Saving calculation with id [{}]...", calculation.getId());
-
-        Calculation savedCalculation = calculationRepository.save(calculation);
-        boolean success = savedCalculation != null;
-
-        log.info("Calculation with id [{}] saved successfully.", calculation.getId());
-
-        return success;
     }
 
 }
